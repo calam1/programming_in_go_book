@@ -15,8 +15,12 @@ import (
 var britishAmerican = "british-american.txt"
 
 func init() {
-	dir, _ := filepath.Split(os.Args[0])
-	britishAmerican = filepath.Join(dir, britishAmerican)
+	// commented out code that was in the book, because since the file is in the same directory the Join
+	// was not needed and actually caused problems of adding a _test path.  All commented out Join calls
+	// reflect this comment
+	//dir, _ := filepath.Split(os.Args[0])
+	//britishAmerican = filepath.Join(dir, britishAmerican)
+	britishAmerican = britishAmerican
 }
 
 func main() {
