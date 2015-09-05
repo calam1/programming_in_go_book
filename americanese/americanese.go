@@ -20,14 +20,18 @@ func init() {
 }
 
 func main() {
+	// get and assign input and output values
 	inFilename, outFilename, err := filenamesFromCommandLine()
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
 
+	// create new files to read in and out from
 	inFile, outFile := os.Stdin, os.Stdout
+
 	if inFilename != "" {
+		// open input file
 		if inFile, err = os.Open(inFilename); err != nil {
 			log.Fatal(err)
 		}
@@ -35,6 +39,7 @@ func main() {
 	}
 
 	if outFilename != "" {
+		// create output file
 		if outFile, err = os.Create(outFilename); err != nil {
 			log.Fatal(err)
 		}
@@ -47,16 +52,21 @@ func main() {
 }
 
 func filenamesFromCommandLine() (inFilename, outFilename string, err error) {
+	// check to see if at least two args are sent and if help is being requested
 	if len(os.Args) > 1 && (os.Args[1] == "-h" || os.Args[1] == "--help") {
 		err = fmt.Errorf("usage: %s [<]infile.txt [>]outfile.txt", filepath.Base(os.Args[0]))
 		return "", "", err
 	}
+
+	// assign the return values to the respective args
 	if len(os.Args) > 1 {
 		inFilename = os.Args[1]
 		if len(os.Args) > 2 {
 			outFilename = os.Args[2]
 		}
 	}
+
+	// if the input and output filenames are the same log error
 	if inFilename != "" && inFilename == outFilename {
 		log.Fatal("won't overwrite the infile")
 	}
@@ -89,6 +99,7 @@ func americanese(inFile io.Reader, outFile io.Writer) (err error) {
 		} else if err != nil {
 			return err
 		}
+
 		line = wordRx.ReplaceAllStringFunc(line, replacer)
 		if _, err = writer.WriteString(line); err != nil {
 			return err
@@ -98,21 +109,31 @@ func americanese(inFile io.Reader, outFile io.Writer) (err error) {
 }
 
 func makeReplacerFunction(file string) (func(string) string, error) {
+	// reads the british-american.txt file
 	rawBytes, err := ioutil.ReadFile(file)
 	if err != nil {
 		return nil, err
 	}
+
+	// go conversion of a form type i.e. - string
 	text := string(rawBytes)
 
+	// create a map
 	usForBritish := make(map[string]string)
+	// break up by new line and return a slice of strings
 	lines := strings.Split(text, "\n")
+
+	//iterate the slice of lines
 	for _, line := range lines {
+		// Fields split by whitespace i.e. color colour
 		fields := strings.Fields(line)
 		if len(fields) == 2 {
+			// add to map
 			usForBritish[fields[0]] = fields[1]
 		}
 	}
 
+	// closure that see if word is in map an if it is return the value otherwise return the evaluated word
 	return func(word string) string {
 		if usWord, found := usForBritish[word]; found {
 			return usWord
