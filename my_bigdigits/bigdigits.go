@@ -17,7 +17,7 @@ func main() {
 	stringOfDigits := os.Args[1]    /* get the arg that has the number */
 	for row := range bigDigits[1] { /* get the length of each value in array  , which is 7 in this case*/
 		line := ""
-		for column := range stringOfDigits { /* iterate each byte of the arg i.e3. 123 */
+		for _, column := range stringOfDigits { /* iterate each byte of the arg i.e3. 123 */
 			digit := stringOfDigits[column] - '0' /* So we retrieve the byte value of the command-line string at the given column and subtract the byte value of digit 0 from it to get the number it represents - utf code points where 0 code point is 48 */
 			if 0 <= digit && digit <= 9 {
 				line += bigDigits[digit][row]
